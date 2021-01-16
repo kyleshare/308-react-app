@@ -6,12 +6,42 @@ import axios from 'axios';
 function MyApp() {
   const [characters, setCharacters] = useState([]);
 
-  function removeOneCharacter (index) {
+  async function removeOneCharacter (index) {
+    //console.log(index);
+    //console.log(characters[index]);
+
+    /*
     const updated = characters.filter((character, i) => {
        return i !== index
     });
-    setCharacters(updated);
+    */
+
+    try {
+      const person = characters[index];
+      console.log(person.id);
+
+      console.log('test');
+      const response = await axios.delete('http://localhost:5000/users/' + person.id);
+      console.log('test2');
+
+
+      console.log("resp status is", response.status);
+      if (response.status === 204){
+            const updated = characters.filter((character, i) => {
+         return i !== index
+      });
+      setCharacters(updated);
+    }
+
+
+      return response;
+    }
+    catch (error){
+      console.log(error);
+      return false; //Do I need to return false?
+    }
   }
+
 
   async function fetchAll(){
    try {
@@ -41,7 +71,7 @@ function MyApp() {
    try {
       //generate random id of 5 for person
       person.id = generateId()
-      console.log(person.id);
+      //console.log(person.id);
       const response = await axios.post('http://localhost:5000/users', person);
       return response;
    }
